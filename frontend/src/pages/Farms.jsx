@@ -118,12 +118,7 @@ export default function Farms() {
               </div>
               
               <button className="text-primary-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all">
-                View Details <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          </div>
-        ))}
-      </div>
+<Link to={`/farms/${farm.id}`} className="text-primary-600 text-sm font-semibold flex items-center gap-1 group-hover:gap-2 transition-all"> View Details <ArrowRight className="w-4 h-4" /> </Link> </button> </div> </div> ))} </div>
     </div>
   );
 }

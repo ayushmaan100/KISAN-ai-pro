@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Farms from './pages/Farms';
 import AddFarm from './pages/AddFarm';
+import FarmDetails from './pages/FarmDetails';
 
 
 export default function App() {
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/farms" element={<Farms />} />
           <Route path="/farms/add" element={<AddFarm />} />  {/* <-- Add this line */}
+          <Route path="/farms/:farmId" element={<FarmDetails />} />
         </Route>
       </Routes>
     </BrowserRouter>
