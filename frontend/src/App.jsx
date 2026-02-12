@@ -3,6 +3,8 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Farms from './pages/Farms';
+import AddFarm from './pages/AddFarm';
+
 
 export default function App() {
   return (
@@ -16,6 +18,7 @@ export default function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/farms" element={<Farms />} />
+          <Route path="/farms/add" element={<AddFarm />} />  {/* <-- Add this line */}
         </Route>
       </Routes>
     </BrowserRouter>
