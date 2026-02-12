@@ -16,7 +16,8 @@ export default function Login() {
 
     try {
       // 1. Call the Backend
-      const response = await api.post('/auth/login', { phone });
+      const response = await api.post('/auth/login', { phone });    
+    // Note: This endpoint is a placeholder. The actual endpoint and payload may differ based on your backend implementation.
       
       // 2. Save the Token and User info
       localStorage.setItem('token', response.data.token);
