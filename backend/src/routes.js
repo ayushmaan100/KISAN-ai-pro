@@ -3,6 +3,7 @@ import authRoutes from './modules/auth/auth.routes.js';
 import { requireAuth } from './middleware/auth.middleware.js';
 import farmRoutes from './modules/farms/farm.routes.js';
 import * as farmController from './modules/farms/farm.controller.js';
+import seasonRoutes from "./modules/seasons/season.routes.js"; 
 
 const router = Router();
 
@@ -11,11 +12,12 @@ router.use('/auth', authRoutes);
 
 // Protected Routes (Just a test for now)
 router.get('/me', requireAuth, (req, res) => {
-  res.json({ user: req.user });
+  res.json({ user: req.user }); 
 });
 
 // Farm Routes (Protected)
 router.use('/farms', requireAuth, farmRoutes);
+router.use("/seasons", requireAuth, seasonRoutes); 
 
 
 export default router;
