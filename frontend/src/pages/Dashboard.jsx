@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Sprout, Tractor, ClipboardList, CheckCircle, Circle, AlertCircle, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../api';
+import { Cloud, CloudRain, Sun, Wind, Droplets, Thermometer } from 'lucide-react';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({ farms: 0, seasons: 0, pendingTasks: 0 });
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [weather, setWeather] = useState(null); // Add State
 
   useEffect(() => {
     // Load User
@@ -28,12 +30,15 @@ export default function Dashboard() {
 
       const farms = farmsRes.data;
       const allTasks = tasksRes.data;
+      
 
       // Calculate Stats
       const activeFarms = farms.length;
       // Count active seasons by checking internal farm data if available, or just use 0 for now
       // (For MVP, we just count farms. Later we can count exact seasons)
       const pending = allTasks.filter(t => !t.isCompleted).length;
+
+      
 
       setStats({
         farms: activeFarms,
@@ -42,6 +47,16 @@ export default function Dashboard() {
       });
 
       setTasks(allTasks);
+
+      const location = farms.length > 0 ? farms[0].district : 'Patna';
+
+      try {
+      const weatherRes = await api.get(`/weather/${location}`);
+      setWeather(weatherRes.data);
+    } catch (err) {
+      console.error("Weather fetch failed", err);
+    }
+
     } catch (error) {
       console.error("Dashboard Load Error:", error);
     } finally {
@@ -147,16 +162,66 @@ export default function Dashboard() {
 
         {/* Right Column: Weather or Quick Actions (Placeholder for now) */}
         <div className="space-y-6">
-          <div className="bg-gradient-to-br from-primary-600 to-primary-800 rounded-2xl p-6 text-white shadow-lg">
-            <h3 className="font-bold text-lg mb-1">Weather Forecast</h3>
-            <p className="text-primary-100 text-sm mb-4">Patna, Bihar</p>
-            <div className="flex items-center gap-4">
-               <div className="text-4xl font-bold">28°C</div>
-               <div className="text-primary-100">Sunny</div>
-            </div>
-          </div>
+  {!weather ? (
+    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 h-48 flex items-center justify-center text-gray-400">
+      Loading Weather...
+    </div>
+  ) : (
+    <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+      {/* Decorative circle */}
+      <div className="absolute -top-6 -right-6 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+      
+      <div className="flex justify-between items-start mb-8 relative z-10">
+        <div>
+          <h3 className="font-bold text-lg flex items-center gap-2">
+            <Thermometer className="w-5 h-5" /> Weather
+          </h3>
+          <p className="text-blue-100 text-sm">{weather.location}, Bihar</p>
+        </div>
+        <div className="bg-white/20 p-2 rounded-lg backdrop-blur-sm">
+           {/* Dynamic Icon Rendering */}
+           {weather.condition === 'Rain' ? <CloudRain className="w-8 h-8" /> : 
+            weather.condition === 'Clouds' ? <Cloud className="w-8 h-8" /> : 
+            <Sun className="w-8 h-8" />}
         </div>
       </div>
+
+      <div className="flex items-end gap-2 mb-4 relative z-10">
+        <div className="text-5xl font-bold">{weather.temp}°</div>
+        <div className="text-blue-100 mb-2 font-medium capitalize">{weather.description}</div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10 relative z-10">
+        <div className="flex items-center gap-2">
+          <Wind className="w-4 h-4 text-blue-200" />
+          <span className="text-sm">{weather.windSpeed} km/h</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Droplets className="w-4 h-4 text-blue-200" />
+          <span className="text-sm">{weather.humidity}% Hum</span>
+        </div>
+      </div>
+    </div>
+  )}
+
+  {/* Smart Alert (Only shows if weather is bad) */}
+  {weather && (weather.condition === 'Rain' || weather.temp > 40) && (
+    <div className="bg-orange-50 border border-orange-100 p-4 rounded-xl flex gap-3">
+      <div className="bg-orange-100 p-2 rounded-full h-fit">
+        <AlertTriangle className="w-5 h-5 text-orange-600" />
+      </div>
+      <div>
+        <h4 className="font-bold text-orange-800 text-sm">Farm Advisory</h4>
+        <p className="text-orange-700 text-xs mt-1">
+          {weather.condition === 'Rain' 
+            ? "Heavy rain detected. Delay fertilizer application to avoid washout."
+            : "Heatwave alert. Ensure irrigation for young crops."}
+        </p>
+      </div>
+    </div>
+  )}
+</div>
+</div>
     </div>
   );
 }
