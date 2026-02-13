@@ -5,6 +5,8 @@ import Dashboard from './pages/Dashboard';
 import Farms from './pages/Farms';
 import AddFarm from './pages/AddFarm';
 import FarmDetails from './pages/FarmDetails';
+import Planner from './pages/Planner';
+import Settings from './pages/Settings';
 
 
 export default function App() {
@@ -19,8 +21,10 @@ export default function App() {
           <Route path="/" element={<Navigate to="/dashboard" replace />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/farms" element={<Farms />} />
-          <Route path="/farms/add" element={<AddFarm />} />  {/* <-- Add this line */}
+          <Route path="/farms/add" element={<AddFarm />} />  
           <Route path="/farms/:farmId" element={<FarmDetails />} />
+          <Route path="/planner" element={<Planner />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Routes>
     </BrowserRouter>

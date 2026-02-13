@@ -1,5 +1,7 @@
 // (The API Handler) Create/Update user and return token.
 import { register, login } from "./auth.service.js";
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
 export const registerHandler = async (req, res, next) => {
   try {
@@ -22,5 +24,22 @@ export const loginHandler = async (req, res, next) => {
   } catch (err) {
     if (err.message.includes("not found")) return res.status(404).json({ error: err.message });
     next(err);
+  }
+};
+
+// Add this function
+export const updateProfile = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { name, language } = req.body;
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { name, language }
+    });
+
+    res.json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to update profile" });
   }
 };
