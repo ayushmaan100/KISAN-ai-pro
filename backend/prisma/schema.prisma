@@ -77,6 +77,18 @@ model Expense {
   season Season @relation(fields: [seasonId], references: [id])
 }
 
+// 6. Market Intelligence
+model MarketPrice {
+  id        String   @id @default(uuid())
+  market    String   // e.g., "Gulabbagh Mandi"
+  district  String   // e.g., "Purnia"
+  state     String   @default("Bihar")
+  crop      String   // e.g., "Maize"
+  variety   String?  // e.g., "Hybrid"
+  price     Float    // Price per Quintal (100kg)
+  date      DateTime @default(now())
+}
+
 // --- Enums for strict typing ---
 enum Role {
   FARMER

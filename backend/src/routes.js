@@ -7,6 +7,7 @@ import seasonRoutes from "./modules/seasons/season.routes.js";
 import taskRoutes from "./modules/tasks/task.routes.js";
 import expenseRoutes from "./modules/expenses/expense.routes.js"; 
 import weatherRoutes from "./modules/weather/weather.routes.js";
+import marketRoutes from "./modules/markets/market.routes.js"; // <--- Import
 
 const router = Router();
 
@@ -24,6 +25,7 @@ router.use("/seasons", requireAuth, seasonRoutes);
 router.use("/tasks", requireAuth, taskRoutes); 
 router.use("/expenses", requireAuth, expenseRoutes); 
 router.use("/weather", weatherRoutes); 
+router.use("/markets", marketRoutes); // <--- Add this
 
 
 

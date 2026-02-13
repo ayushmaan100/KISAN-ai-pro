@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Sprout, Tractor, ClipboardList, CheckCircle, Circle, AlertCircle, Calendar } from 'lucide-react';
+import { Cloud, CloudRain, Sun, Wind, Droplets, Thermometer } from 'lucide-react';
+import { TrendingUp, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../api';
-import { Cloud, CloudRain, Sun, Wind, Droplets, Thermometer } from 'lucide-react';
+
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({ farms: 0, seasons: 0, pendingTasks: 0 });
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [weather, setWeather] = useState(null); // Add State
+  const [weather, setWeather] = useState(null); 
+  const [prices, setPrices] = useState([]);
 
   useEffect(() => {
     // Load User
@@ -23,14 +26,16 @@ export default function Dashboard() {
   const fetchDashboardData = async () => {
     try {
       // Parallel requests for speed
-      const [farmsRes, tasksRes] = await Promise.all([
+      const [farmsRes, tasksRes, marketsRes] = await Promise.all([
         api.get('/farms'),
-        api.get('/tasks')
+        api.get('/tasks'),
+        api.get('/markets')
       ]);
+
 
       const farms = farmsRes.data;
       const allTasks = tasksRes.data;
-      
+      const marketPrices = marketsRes.data;
 
       // Calculate Stats
       const activeFarms = farms.length;
@@ -56,6 +61,12 @@ export default function Dashboard() {
     } catch (err) {
       console.error("Weather fetch failed", err);
     }
+
+    // Inside fetchDashboardData function:
+    try {
+      const marketRes = await api.get('/markets');
+      setPrices(marketPrices);
+    } catch (e) { console.error("Market fetch error", e); }
 
     } catch (error) {
       console.error("Dashboard Load Error:", error);
@@ -203,6 +214,43 @@ export default function Dashboard() {
       </div>
     </div>
   )}
+
+  {/* Live Market Rates Widget */}
+<div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mt-6">
+  <div className="p-4 border-b border-gray-100 bg-green-50/50 flex justify-between items-center">
+    <h3 className="font-bold text-earth-800 flex items-center gap-2">
+      <TrendingUp className="w-5 h-5 text-green-600" />
+      Mandi Rates
+    </h3>
+    <span className="text-xs font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full">
+      Live Updates
+    </span>
+  </div>
+  
+  <div className="divide-y divide-gray-100 max-h-64 overflow-y-auto">
+    {prices.length === 0 ? (
+      <div className="p-4 text-center text-gray-400 text-sm">Loading rates...</div>
+    ) : (
+      prices.map((rate) => (
+        <div key={rate.id} className="p-4 hover:bg-gray-50 transition-colors flex justify-between items-center">
+          <div>
+            <p className="font-bold text-gray-800">{rate.crop}</p>
+            <p className="text-xs text-gray-500 flex items-center gap-1">
+              <MapPin className="w-3 h-3" /> {rate.market}, {rate.district}
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="font-bold text-green-700">₹{rate.price}/Q</p>
+            <p className="text-xs text-gray-400">{rate.variety}</p>
+          </div>
+        </div>
+      ))
+    )}
+  </div>
+  <div className="p-2 bg-gray-50 text-center text-xs text-gray-400">
+    Prices per Quintal (100kg)
+  </div>
+</div>
 
   {/* Smart Alert (Only shows if weather is bad) */}
   {weather && (weather.condition === 'Rain' || weather.temp > 40) && (
