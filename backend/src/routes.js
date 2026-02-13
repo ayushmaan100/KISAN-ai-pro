@@ -4,6 +4,7 @@ import { requireAuth } from './middleware/auth.middleware.js';
 import farmRoutes from './modules/farms/farm.routes.js';
 import * as farmController from './modules/farms/farm.controller.js';
 import seasonRoutes from "./modules/seasons/season.routes.js"; 
+import taskRoutes from "./modules/tasks/task.routes.js";
 
 const router = Router();
 
@@ -18,6 +19,7 @@ router.get('/me', requireAuth, (req, res) => {
 // Farm Routes (Protected)
 router.use('/farms', requireAuth, farmRoutes);
 router.use("/seasons", requireAuth, seasonRoutes); 
+router.use("/tasks", requireAuth, taskRoutes); 
 
 
 export default router;

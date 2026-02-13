@@ -16,7 +16,8 @@ export default function FarmDetails() {
   const [creating, setCreating] = useState(false);
   const [newSeason, setNewSeason] = useState({
     crop: 'Wheat',
-    sowingDate: new Date().toISOString().split('T')[0] // Default to today
+    sowingDate: new Date().toISOString().split('T')[0] 
+    // Default to today
   });
 
   // Fetch Data
