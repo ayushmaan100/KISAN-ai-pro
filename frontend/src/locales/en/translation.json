@@ -1,0 +1,34 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "farms": "My Farms",
+    "planner": "Planner",
+    "doctor": "Crop Doctor",
+    "settings": "Settings",
+    "logout": "Logout"
+  },
+  "dash": {
+    "welcome": "Welcome back",
+    "active_farms": "Active Farms",
+    "active_seasons": "Active Seasons",
+    "pending_tasks": "Pending Tasks",
+    "weather": "Weather",
+    "mandi": "Mandi Rates",
+    "live": "Live Updates"
+  },
+  "farm": {
+    "add": "Add New Farm",
+    "soil": "Soil",
+    "water": "Water",
+    "active_crop": "Active Crop",
+    "start_season": "Start New Season",
+    "schedule": "Schedule & Tasks",
+    "financials": "Financials"
+  },
+  "common": {
+    "save": "Save Changes",
+    "cancel": "Cancel",
+    "active": "Active",
+    "loading": "Loading..."
+  }
+}

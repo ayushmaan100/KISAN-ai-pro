@@ -1,15 +1,18 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Sprout, LayoutDashboard, Calendar, Settings, LogOut } from 'lucide-react';
+import { Sprout, LayoutDashboard, Calendar, Settings, LogOut, Sparkles} from 'lucide-react';
+import { useTranslation } from 'react-i18next'; // <--- Import hook
 
 export default function Layout() {
+  const { t } = useTranslation(); // <--- Initialize translation hook
   const location = useLocation();
 
   const navItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-    { icon: Sprout, label: 'My Farms', path: '/farms' },
-    { icon: Calendar, label: 'Planner', path: '/planner' },
-    { icon: Settings, label: 'Settings', path: '/settings' },
+    { icon: LayoutDashboard, label: t('nav.dashboard'), path: '/dashboard' },
+    { icon: Sprout, label: t('nav.farms'), path: '/farms' },
+    { icon: Calendar, label: t('nav.planner'), path: '/planner' },
+    { icon: Settings, label: t('nav.settings'), path: '/settings' },
+    { icon: Sparkles, label: t('nav.doctor'), path: '/doctor' },
   ];
 
   return (

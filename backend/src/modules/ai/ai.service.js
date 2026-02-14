@@ -6,7 +6,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const analyzeCropImage = async (filePath, mimeType) => {
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // Read file and convert to base64
     const fileBuffer = fs.readFileSync(filePath);

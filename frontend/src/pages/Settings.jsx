@@ -2,12 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { User, Globe, Save, Loader2, LogOut } from 'lucide-react';
 import api from '../api';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
+
 
 export default function Settings() {
   const navigate = useNavigate();
   const [user, setUser] = useState({ name: '', phone: '', language: 'en' });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const { t, i18n } = useTranslation();
+
 
   useEffect(() => {
     const stored = localStorage.getItem('user');
@@ -25,6 +29,7 @@ export default function Settings() {
       // Update local storage
       localStorage.setItem('user', JSON.stringify(res.data));
       setUser(res.data);
+      i18n.changeLanguage(res.data.language); // <--- This switches it instantly
       setMessage('Profile updated successfully! ✅');
       setTimeout(() => setMessage(''), 3000);
     } catch (error) {
@@ -38,6 +43,13 @@ export default function Settings() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     navigate('/login');
+  };
+
+  // Update language switcher to use i18n.changeLanguage
+  const handleLanguageChange = (e) => {
+    const newLang = e.target.value;
+    i18n.changeLanguage(newLang); // <--- This switches it instantly
+    setUser({...user, language: newLang});
   };
 
   return (
@@ -76,13 +88,13 @@ export default function Settings() {
             <div className="relative">
               <Globe className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
               <select 
-                value={user.language}
-                onChange={(e) => setUser({...user, language: e.target.value})}
+                value={i18n.language} // Use current i18n language
+                onChange={handleLanguageChange}
                 className="input-field pl-10 bg-white"
               >
                 <option value="en">English</option>
                 <option value="hi">Hindi (हिंदी)</option>
-                <option value="pb">Punjabi (ਪੰਜਾਬੀ)</option>
+                
               </select>
             </div>
           </div>

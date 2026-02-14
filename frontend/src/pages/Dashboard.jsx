@@ -4,9 +4,13 @@ import { Cloud, CloudRain, Sun, Wind, Droplets, Thermometer } from 'lucide-react
 import { TrendingUp, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import api from '../api';
+import { useTranslation } from 'react-i18next';
+
+
 
 
 export default function Dashboard() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [stats, setStats] = useState({ farms: 0, seasons: 0, pendingTasks: 0 });
   const [tasks, setTasks] = useState([]);
@@ -105,6 +109,7 @@ export default function Dashboard() {
           Welcome back, <span className="text-primary-600">{user.name || "Farmer"}</span>! 🌾
         </h1>
         <p className="text-gray-500 mt-2">Here is your daily overview.</p>
+        
       </header>
 
       {/* Stats Row */}

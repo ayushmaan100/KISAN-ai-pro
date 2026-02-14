@@ -7,6 +7,7 @@ import AddFarm from './pages/AddFarm';
 import FarmDetails from './pages/FarmDetails';
 import Planner from './pages/Planner';
 import Settings from './pages/Settings';
+import CropDoctor from './pages/CropDoctor';
 
 
 export default function App() {
@@ -25,6 +26,7 @@ export default function App() {
           <Route path="/farms/:farmId" element={<FarmDetails />} />
           <Route path="/planner" element={<Planner />} />
           <Route path="/settings" element={<Settings />} />
+          <Route path="/doctor" element={<CropDoctor />} />
         </Route>
       </Routes>
     </BrowserRouter>
