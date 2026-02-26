@@ -8,6 +8,7 @@ import FarmDetails from './pages/FarmDetails';
 import Planner from './pages/Planner';
 import Settings from './pages/Settings';
 import CropDoctor from './pages/CropDoctor';
+import Inventory from './pages/Inventory'; // <--- Import Inventory Page
 
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/planner" element={<Planner />} />
           <Route path="/settings" element={<Settings />} />
           <Route path="/doctor" element={<CropDoctor />} />
+          <Route path="/inventory" element={<Inventory />} />
         </Route>
       </Routes>
     </BrowserRouter>

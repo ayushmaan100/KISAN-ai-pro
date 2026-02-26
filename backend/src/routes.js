@@ -9,6 +9,9 @@ import expenseRoutes from "./modules/expenses/expense.routes.js";
 import weatherRoutes from "./modules/weather/weather.routes.js";
 import marketRoutes from "./modules/markets/market.routes.js"; 
 import aiRoutes from "./modules/ai/ai.routes.js"; 
+import inventoryRoutes from "./modules/inventory/inventory.routes.js"; // <--- Import
+
+// ... inside router.use()
 
 const router = Router();
 
@@ -28,6 +31,8 @@ router.use("/expenses", requireAuth, expenseRoutes);
 router.use("/weather", weatherRoutes); 
 router.use("/markets", marketRoutes); 
 router.use("/ai", aiRoutes);
+router.use("/inventory", requireAuth, inventoryRoutes); 
+
 
 
 
