@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Sprout, Calendar, CheckCircle, Circle, ArrowLeft, Loader2, X, AlertTriangle, Wallet, TrendingDown, Plus } from 'lucide-react';
+import { Sprout, Calendar, CheckCircle, Circle, ArrowLeft, Loader2, X, AlertTriangle, Wallet, TrendingDown, Plus, Sparkles } from 'lucide-react';
 import api from '../api';
 
 export default function FarmDetails() {
@@ -23,6 +23,9 @@ export default function FarmDetails() {
   const [newExpense, setNewExpense] = useState({ category: 'Fertilizer', amount: '', note: '' });
 
   const activeSeason = seasons.find(s => s.status === 'ACTIVE');
+
+  const [recommendations, setRecommendations] = useState(null);
+  const [loadingAI, setLoadingAI] = useState(false);
 
   // Fetch Data
   const fetchData = async () => {
@@ -91,6 +94,18 @@ export default function FarmDetails() {
     }
   };
 
+  const fetchRecommendations = async () => {
+  setLoadingAI(true);
+  try {
+    const res = await api.get(`/ai/recommend/${farmId}`);
+    setRecommendations(res.data);
+  } catch (error) {
+    alert("Failed to fetch recommendations");
+  } finally {
+    setLoadingAI(false);
+  }
+};
+
   const totalCost = expenses.reduce((sum, item) => sum + item.amount, 0);
 
   if (loading && !farm) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin" /></div>;
@@ -117,14 +132,66 @@ export default function FarmDetails() {
       </div>
 
       {!activeSeason ? (
-        <div className="bg-orange-50 border border-orange-100 rounded-xl p-8 text-center">
-          <Sprout className="w-12 h-12 text-orange-300 mx-auto mb-3" />
-          <h3 className="text-lg font-medium text-orange-800">No Active Season</h3>
-          <p className="text-orange-600 mb-4">Start a crop cycle to manage tasks and expenses.</p>
-          <button onClick={() => setIsSeasonModalOpen(true)} className="btn-primary mx-auto bg-orange-600 hover:bg-orange-700">
-            Start New Season
-          </button>
+  <div className="space-y-6">
+    {/* Start Season Card */}
+    <div className="bg-orange-50 border border-orange-100 rounded-xl p-8 text-center">
+      <Sprout className="w-12 h-12 text-orange-300 mx-auto mb-3" />
+      <h3 className="text-lg font-medium text-orange-800">No Active Season</h3>
+      <p className="text-orange-600 mb-6">Start a crop cycle to manage tasks and expenses.</p>
+
+      <div className="flex flex-col sm:flex-row justify-center gap-4">
+        <button onClick={() => setIsSeasonModalOpen(true)} className="btn-primary bg-orange-600 hover:bg-orange-700">
+          Start New Season
+        </button>
+        <button 
+          onClick={fetchRecommendations} 
+          disabled={loadingAI}
+          className="px-6 py-3 bg-white text-primary-600 border border-primary-200 rounded-xl font-semibold hover:bg-primary-50 transition-all flex items-center justify-center gap-2"
+        >
+          {loadingAI ? <Loader2 className="animate-spin w-5 h-5" /> : <Sparkles className="w-5 h-5" />}
+          Get AI Recommendations
+        </button>
+      </div>
+    </div>
+
+    {/* AI Recommendations Display */}
+    {recommendations && (
+      <div className="bg-gradient-to-br from-primary-50 to-white rounded-2xl p-6 border border-primary-100 animate-in fade-in slide-in-from-bottom-4">
+        <h3 className="text-xl font-bold text-earth-800 mb-4 flex items-center gap-2">
+          <Sparkles className="w-6 h-6 text-primary-600" />
+          Top Crops for {farm.district} Right Now
+        </h3>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {recommendations.map((crop, idx) => (
+            <div key={idx} className="bg-white p-5 rounded-xl border border-gray-100 shadow-sm hover:border-primary-300 transition-colors">
+              <div className="flex justify-between items-start mb-2">
+                <h4 className="font-bold text-lg text-primary-800">{crop.cropName}</h4>
+                <span className="bg-primary-100 text-primary-700 text-xs px-2 py-1 rounded-full font-bold">
+                  #{idx + 1}
+                </span>
+              </div>
+              <p className="text-sm text-gray-600 mb-3 leading-relaxed">{crop.reason}</p>
+              <div className="space-y-1 pt-3 border-t border-gray-100 text-xs text-gray-500">
+                <p><span className="font-semibold text-gray-700">Duration:</span> {crop.duration}</p>
+                <p><span className="font-semibold text-gray-700">Expected Yield:</span> {crop.expectedYield}</p>
+              </div>
+              <button 
+                onClick={() => {
+                  setNewSeason({ ...newSeason, crop: crop.cropName });
+                  setIsSeasonModalOpen(true);
+                  window.scrollTo(0, 0);
+                }}
+                className="w-full mt-4 py-2 bg-primary-50 text-primary-700 font-semibold rounded-lg hover:bg-primary-100 transition-colors text-sm"
+              >
+                Select this crop
+              </button>
+            </div>
+          ))}
         </div>
+      </div>
+    )}
+  </div>
       ) : (
         <div className="space-y-6">
           {/* Active Season Banner */}
